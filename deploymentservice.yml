@@ -1,7 +1,35 @@
+---
+apiVersion: v1
+data:
+  prajwal.conf: |
+    Hello there! This is Prajwal's conf file.
+kind: ConfigMap
+metadata:
+  name: prajwal-configmap
+  namespace: prajwal
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: pp-secret-1
+  namespace: prajwal
+type: Opaque
+data:
+  username: prajwal
+  password: Pass@1234
+
+ 
+
+---
+
+ 
+
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nodeapp-deployment
+  name: nodeapp-deployment-pp-1
+  namespace: prajwal
   labels:
     app: nodeapp
 spec:
@@ -19,14 +47,35 @@ spec:
         image: thetips4you/nodeapp:latest
         ports:
         - containerPort: 3000
-        
-        
+        volumeMounts:
+         - name: testconfigmap
+           mountPath: "/tmp/config" 
+         - name: testsecret
+           mountPath: /tmp/mysecrets
+      volumes:
+        - name: testconfigmap
+          configMap:
+            name: prajwal-configmap
+            items:
+              - key: prajwal.conf
+                path: prajwal.conf
+        - name: testsecret
+          secret:
+            secretName: pp-secret-1
+
+ 
+
 ---
+
+ 
+
+ 
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: nodeapp-service
+  name: nodeapp-service-pp-1
+  namespace: prajwal
 spec:
   selector:
     app: nodeapp 
@@ -35,4 +84,4 @@ spec:
   - protocol: TCP
     port: 5000
     targetPort: 3000
-    nodePort: 32222
+    nodePort: 31122
