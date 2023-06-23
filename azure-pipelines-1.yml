@@ -19,7 +19,7 @@ steps:
     displayName: 'Copy manifest file'
     inputs:
       SourceFolder: '$(Build.SourcesDirectory)'
-      Contents: 'deploymentservice.yml'  # Specify the name of your manifest file
+      Contents: 'deploymentservice.yml'  
       TargetFolder: '$(Pipeline.Workspace)'  
 
   - task: KubernetesManifest@0
@@ -29,3 +29,4 @@ steps:
       kubernetesServiceConnection: 'K8sSvc'
       manifests: |
         $(Pipeline.Workspace)/deploymentservice.yml
+      namespace: prajwal
